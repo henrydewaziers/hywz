@@ -4,6 +4,11 @@ root:
         _controller: FrameworkBundle:Redirect:redirect
         route: waziers_front_homepage
         permanent: true
+
+waziers_user:
+    resource: "@WaziersUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
 waziers_api:
     resource: "@WaziersApiBundle/Resources/config/routing.yml"
     prefix:   /api

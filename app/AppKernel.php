@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\HttpCacheBundle\FOSHttpCacheBundle(),
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
@@ -25,6 +26,7 @@ class AppKernel extends Kernel
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
             new Waziers\ApiBundle\WaziersApiBundle(),
             new Waziers\FrontBundle\WaziersFrontBundle(),
+            new Waziers\UserBundle\WaziersUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
