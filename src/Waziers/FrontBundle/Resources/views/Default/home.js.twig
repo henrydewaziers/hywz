@@ -1,0 +1,27 @@
+'use strict';
+
+window.assets_base_url = "http://meret.php-70.shou.lan/henry/waziers/web/app_dev.php/";
+
+
+var module = angular.module(
+    'waziers',
+    [
+        'ui.router',
+        'ngResource',
+
+        'coreModule'
+    ],
+    [
+        '$interpolateProvider', '$httpProvider', '$resourceProvider', '$locationProvider',
+        function ($interpolateProvider, $httpProvider, $resourceProvider, $locationProvider) {
+            $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            $httpProvider.defaults.headers.common['Accept'] = 'application/json';
+
+            $locationProvider.html5Mode(true);
+
+            $interpolateProvider
+                .startSymbol('[[')
+                .endSymbol(']]');
+        }]
+);
+

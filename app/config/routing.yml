@@ -1,0 +1,14 @@
+root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: waziers_front_homepage
+        permanent: true
+waziers_api:
+    resource: "@WaziersApiBundle/Resources/config/routing.yml"
+    prefix:   /api
+
+waziers_front:
+    resource: "@WaziersFrontBundle/Resources/config/routing.yml"
+    prefix:   /front
+
