@@ -26,6 +26,17 @@ class Furniture
     private $id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="ref", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @JMS\Groups({ "furniture_details" })
+     */
+    private $ref;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
@@ -62,6 +73,27 @@ class Furniture
     {
         return $this->id;
     }
+
+    /**
+     * @return int
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
+     * @param int $ref
+     *
+     * @return $this
+     */
+    public function setRef($ref)
+    {
+        $this->ref = $ref;
+
+        return $this;
+    }
+
 
     /**
      * Set title
