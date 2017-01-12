@@ -29,8 +29,6 @@ class Furniture
      * @var integer
      *
      * @ORM\Column(name="ref", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @JMS\Groups({ "furniture_details" })
      */
