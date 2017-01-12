@@ -13,6 +13,7 @@
         me.furniture = furniturePromise;
 
         me.submit = function submit() {
+
             new FurnituresResource(me.furniture).$save(
                 null,
                 function (data) {

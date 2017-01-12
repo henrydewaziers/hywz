@@ -36,6 +36,19 @@
                 )
                 .state(
                     {
+                        url : '/new',
+                        name : 'protected.furnitures.new',
+                        templateUrl : 'front/templates/furnitures.details.html',
+                        controller : 'FurnituresDetailsController as details',
+                        resolve : {
+                            furniturePromise : function () {
+                                return {};
+                            }
+                        }
+                    }
+                )
+                .state(
+                    {
                         url : '/:furnitureId',
                         name : 'protected.furnitures.detail',
                         templateUrl : 'front/templates/furnitures.details.html',

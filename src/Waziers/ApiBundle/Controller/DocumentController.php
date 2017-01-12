@@ -86,6 +86,12 @@ class DocumentController extends FOSRestController
      * )
      *
      * @Api\RequestParam(
+     *   name="ref",
+     *   description="The catalogue referance",
+     *   requirements="\d+"
+     * )
+     *
+     * @Api\RequestParam(
      *   name="title",
      *   description="the title"
      * )
@@ -111,6 +117,7 @@ class DocumentController extends FOSRestController
         $furniture = new Furniture();
         $furniture
             ->setTitle($paramFetcher->get('title'))
+            ->setRef($paramFetcher->get('ref'))
             ->setDescription($paramFetcher->get('description'))
             ->setRoom($paramFetcher->get('room'));
 
@@ -130,6 +137,12 @@ class DocumentController extends FOSRestController
      *     200 = "Returned when successful",
      *     400 = "Returned when the form has errors"
      *   }
+     * )
+     *
+     * @Api\RequestParam(
+     *   name="ref",
+     *   description="The catalogue referance",
+     *   requirements="\d+"
      * )
      *
      * @Api\RequestParam(
@@ -168,6 +181,9 @@ class DocumentController extends FOSRestController
             )
             ->setRoom(
                 $paramFetcher->get('room') ? $paramFetcher->get('room') : $furniture->getRoom()
+            )
+            ->setRef(
+                $paramFetcher->get('ref') ? $paramFetcher->get('ref') : $furniture->getRef()
             );
 
         $em->persist($furniture);
