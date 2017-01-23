@@ -1,0 +1,7 @@
+name = Waziers
+description = a simple template
+package = waziers
+version = VERSION
+core = 7.x
+
+base theme = seven

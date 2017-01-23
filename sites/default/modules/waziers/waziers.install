@@ -1,0 +1,55 @@
+<?php
+
+
+/**
+ * Implementation of hook_install().
+ */
+function social_site_install() {
+// Use schema API to create database table.
+  drupal_install_schema('waziers');
+}
+
+
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function social_site_uninstall() {
+// Remove tables.
+  drupal_uninstall_schema('waziers');
+}
+
+
+/*
+* implements hook_sehma().
+*/
+function waziers_schema() {
+  $schema['waziers_choice'] = array(
+    'description' => 'The custom choice',
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'description' => 'The node ID.',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'description' => 'The user ID.',
+        'not null' => TRUE,
+      ),
+      'choice' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid', 'uid'),
+    'indexes' => array(
+      'uid'                 => array('uid'),
+      'nid'                 => array('nid'),
+    ),
+  );
+  return $schema;
+}

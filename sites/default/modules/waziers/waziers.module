@@ -1,0 +1,27 @@
+<?php
+define("OBJECT_TYPE",     "objet");
+
+///**
+// * Implementation of hook_node_view().
+// */
+//function waziers_node_view($node, $view_mode, $langcode) {
+//}
+
+function waziers_preprocess_node(&$variables) {
+  global $user;
+  $variables['waziers_choice'] = getChoice($variables['nid'], $variables['uid']);
+}
+
+function getChoice ($nid, $uid) {
+  $query = db_select('waziers_choice', 'c');
+  $query->fields('c', array('choice', 'nid', 'uid'));
+  $query->condition('nid', $nid);
+  $query->condition('uid', $uid);
+
+  $result = $query->execute();
+  foreach ($result as $record) {
+    return $record->choice;
+  }
+  return null;
+
+}

@@ -1,9 +1,0 @@
-waziers_front_homepage:
-    path:     /ng/{all}
-    defaults: { _controller: WaziersFrontBundle:Default:index }
-    requirements:
-        all: ".*"
-
-waziers_templates:
-    path:     /templates/{templateName}
-    defaults: { _controller: WaziersFrontBundle:Default:templates }

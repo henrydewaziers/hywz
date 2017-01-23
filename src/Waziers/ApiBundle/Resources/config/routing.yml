@@ -1,3 +1,0 @@
-waziers_api_documents:
-    resource: '@WaziersApiBundle/Controller/DocumentController.php'
-    type:     rest

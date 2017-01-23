@@ -1,0 +1,6 @@
+name = Waziers choice module
+description = How to choice a product.
+core = 7.x
+package = ""
+configure =
+
