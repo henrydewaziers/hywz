@@ -6,4 +6,4 @@ sites/*/files
 sites/*/private
 sites/*/settings.php
 .editorconfig
-.idea/*
+.idea*
