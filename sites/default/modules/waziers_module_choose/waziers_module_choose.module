@@ -10,7 +10,6 @@ function waziers_module_choose_perm () {
 function waziers_module_choose_menu () {
     $items = array();
 
-
     $items['node/%node/choose'] = array(
       'page callback' => 'waziers_module_choose_example',
       'page arguments' => array(1),
@@ -24,7 +23,7 @@ function waziers_module_choose_menu () {
 function waziers_module_choose_example ($nid) {
     if (empty($_POST["waziersChoice"])){ die(); }
     global $user;
-    $choice = _waziers_module_getChoice($nid, $user->uid);
+    $choice = _waziers_module_getChoice($nid->nid, $user->uid);
 
     $result = array('msg' => 'waziers_module_choose_example - hello from php','valid' => true);
     if (null === $choice) {
