@@ -7,3 +7,4 @@ sites/*/private
 sites/*/settings.php
 .editorconfig
 .idea
+sites/all/devel
