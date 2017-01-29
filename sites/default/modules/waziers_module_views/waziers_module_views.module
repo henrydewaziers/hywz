@@ -59,7 +59,7 @@ function waziers_module_views_selected()
     global $user;
 
     $output = '';
-    $output .= '<h1>Tous les objets séléctionné</h1>';
+    $output .= '<h1>Tous les objets sélectionnés</h1>';
     $output .=  waziers_module_views_output_header();
 
     foreach (node_load_multiple(
@@ -86,7 +86,7 @@ function waziers_module_views_unselected()
     global $user;
 
     $output = '';
-    $output .= '<h1>Tous les objets non séléctionné</h1>';
+    $output .= '<h1>Tous les objets non sélectionnés</h1>';
     $output .=  waziers_module_views_output_header();
 
     foreach (node_load_multiple(
