@@ -4,7 +4,9 @@
  * Implementation of hook_preprocess_node().
  */
 function waziers_module_preprocess_node(&$variables) {
-  $variables['waziers_choice'] = _waziers_module_getChoice(intval($variables['nid']), intval($variables['uid']));
+  global $user;
+
+  $variables['waziers_choice'] = _waziers_module_getChoice(intval($variables['nid']), intval($user->uid));
 
   if (!is_null($variables['waziers_choice'])) {
       $variables['waziers_choice'] = $variables['waziers_choice']->choice;
