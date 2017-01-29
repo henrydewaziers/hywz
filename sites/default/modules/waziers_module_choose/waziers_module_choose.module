@@ -1,0 +1,58 @@
+<?php
+drupal_add_js(drupal_get_path("module","waziers_module_choose") . "/waziers_module_choose.js");
+
+function waziers_module_choose_perm () {
+    return array(
+      'access waziers_module_choose via ajax',
+    );
+}
+
+function waziers_module_choose_menu () {
+    $items = array();
+
+
+    $items['node/%/choose'] = array(
+      'page callback' => 'waziers_module_choose_example',
+      'page arguments' => array(1),
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+function waziers_module_choose_example ($nid) {
+    if (empty($_POST["waziersChoice"])){ die(); }
+    global $user;
+    $choice = _waziers_module_getChoice($nid, $user->uid);
+
+    $result = array('msg' => 'waziers_module_choose_example - hello from php','valid' => true);
+    if (null === $choice) {
+        $result['sql'] = _waziers_module_choose_insert($nid, $user->uid, 'take' == $_POST["waziersChoice"]);
+    } else {
+        $result['sql'] = _waziers_module_choose_update($choice, 'take' == $_POST["waziersChoice"]);
+    }
+
+
+    drupal_json_output($result);
+    exit();
+}
+
+
+function _waziers_module_choose_update($choice, $choiceValue) {
+    $query = db_update('waziers_choice');
+    $query->fields(array('choice' => intval($choiceValue)));
+    $query->condition('nid', $choice->nid);
+    $query->condition('uid', $choice->uid);
+    return $query->execute();
+}
+
+function _waziers_module_choose_insert($nid, $uid, $choiceValue) {
+    $query = db_insert('waziers_choice');
+    $query->fields(array(
+      'nid' => $nid,
+      'uid' => $uid,
+      'choice' => $choiceValue
+      ));
+    return $query->execute();
+}

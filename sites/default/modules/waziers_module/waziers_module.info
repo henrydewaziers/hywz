@@ -1,0 +1,5 @@
+name = Waziers print an object
+description = "print an object product."
+core = 7.x
+package = "Waziers"
+

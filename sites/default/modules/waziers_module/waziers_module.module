@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * Implementation of hook_preprocess_node().
+ */
+function waziers_module_preprocess_node(&$variables) {
+  $variables['waziers_choice'] = _waziers_module_getChoice($variables['nid'], $variables['uid']);
+
+  if (!is_null($variables['waziers_choice'])) {
+      $variables['waziers_choice'] = $variables['waziers_choice']->choice;
+
+  }
+}
+
+function _waziers_module_getChoice ($nid, $uid) {
+  $query = db_select('waziers_choice', 'c');
+  $query->fields('c', array('choice', 'nid', 'uid'));
+  $query->condition('nid', $nid);
+  $query->condition('uid', $uid);
+
+  $result = $query->execute();
+  foreach ($result as $record) {
+    return $record;
+  }
+
+  return null;
+}

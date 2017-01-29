@@ -77,53 +77,76 @@
  * @see template_preprocess_node()
  * @see template_process()
  */
+
+$waziers_choice = isset($waziers_choice) && $waziers_choice;
 ?>
 
-<div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-<!--    --><?php //dsm($node) ?>
-  <?php print render($title_prefix); ?>
-  <?php if (!$page): ?>
-    <h2<?php print $title_attributes; ?>>
-      <a href="<?php print $node_url; ?>"><?php print $title; ?></a>
-    </h2>
-  <?php endif; ?>
-  <?php print render($title_suffix); ?>
+<div id="node-<?php print $node->nid; ?>"
+     class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+    <!--    --><?php //dsm($node) ?>
+    <?php print render($title_prefix); ?>
+    <?php if (!$page): ?>
+        <h2<?php print $title_attributes; ?>>
+            <a href="<?php print $node_url; ?>"><?php print $title; ?></a>
+        </h2>
+    <?php endif; ?>
+    <?php print render($title_suffix); ?>
 
-  <?php if ($display_submitted): ?>
-    <div class="meta submitted">
-      <?php print $user_picture; ?>
-      <?php print $submitted; ?>
+    <?php if ($display_submitted): ?>
+        <div class="meta submitted">
+            <?php print $user_picture; ?>
+            <?php print $submitted; ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="content clearfix"<?php print $content_attributes; ?>>
+        <?php
+        // We hide the comments and links now so that we can render them later.
+        hide($content['comments']);
+        hide($content['links']);
+        print render($content);
+        ?>
     </div>
-  <?php endif; ?>
 
-  <div class="content clearfix"<?php print $content_attributes; ?>>
+    <?php if (module_exists('waziers_module_choose')) { ?>
+        <?php if ($waziers_choice) { ?>
+            <div>
+                <button class="button button-leave"
+                        data-nid="<?php print $node->nid; ?>">
+                    rendre
+                </button>
+            </div>
+        <?php } else { ?>
+            <div>
+                <button class="button button-choose"
+                        data-nid="<?php print $node->nid; ?>">
+                    Choisir
+                </button>
+            </div>
+        <?php } ?>
+    <?php } else { ?>
+        <?php if ($waziers_choice) : ?>
+            vous avez choisit cet objet
+        <?php endif ?>
+    <?php } ?>
+
+
+
     <?php
-      // We hide the comments and links now so that we can render them later.
-      hide($content['comments']);
-      hide($content['links']);
-      print render($content);
-    ?>
-  </div>
-
-  <?php if ($waziers_choice) : ?>
-      vous avez choisit cet objet
-  <?php endif ?>
-
-  <?php
     // Remove the "Add new comment" link on the teaser page or if the comment
     // form is being displayed on the same page.
     if ($teaser || !empty($content['comments']['comment_form'])) {
-      unset($content['links']['comment']['#links']['comment-add']);
+        unset($content['links']['comment']['#links']['comment-add']);
     }
     // Only display the wrapper div if there are links.
     $links = render($content['links']);
     if ($links):
-  ?>
-    <div class="link-wrapper">
-      <?php print $links; ?>
-    </div>
-  <?php endif; ?>
+        ?>
+        <div class="link-wrapper">
+            <?php print $links; ?>
+        </div>
+    <?php endif; ?>
 
-  <?php print render($content['comments']); ?>
+    <?php print render($content['comments']); ?>
 
 </div>
