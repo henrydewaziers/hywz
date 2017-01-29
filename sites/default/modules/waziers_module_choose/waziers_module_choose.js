@@ -1,8 +1,6 @@
 'use strict';
-console.log('on est dans le module');
 
 (function ($) {
-    console.log('on est dans le module');
 
     $(document).ready(function () {
 

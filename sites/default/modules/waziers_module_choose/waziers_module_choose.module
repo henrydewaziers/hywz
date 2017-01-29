@@ -11,7 +11,7 @@ function waziers_module_choose_menu () {
     $items = array();
 
 
-    $items['node/%/choose'] = array(
+    $items['node/%node/choose'] = array(
       'page callback' => 'waziers_module_choose_example',
       'page arguments' => array(1),
       'access arguments' => array('access content'),
