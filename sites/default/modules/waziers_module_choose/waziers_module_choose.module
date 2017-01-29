@@ -26,11 +26,14 @@ function waziers_module_choose_example ($nid) {
     global $user;
     $choice = _waziers_module_getChoice($nid, $user->uid);
 
-    $result = array('msg' => 'waziers_module_choose_example - hello from php','valid' => true);
+    $result = array('valid' => true);
+
     if (null === $choice) {
         $result['sql'] = _waziers_module_choose_insert($nid, $user->uid, 'take' == $_POST["waziersChoice"]);
+        $result['sql_function'] = 'insert';
     } else {
         $result['sql'] = _waziers_module_choose_update($choice, 'take' == $_POST["waziersChoice"]);
+        $result['sql_function'] = 'insert';
     }
 
 
