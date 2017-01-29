@@ -21,9 +21,10 @@ function waziers_module_choose_menu () {
 }
 
 function waziers_module_choose_example ($nid) {
+    intval($nid);
     if (empty($_POST["waziersChoice"])){ die(); }
     global $user;
-    $choice = _waziers_module_getChoice($nid->nid, $user->uid);
+    $choice = _waziers_module_getChoice($nid, $user->uid);
 
     $result = array('msg' => 'waziers_module_choose_example - hello from php','valid' => true);
     if (null === $choice) {
