@@ -1,0 +1,150 @@
+<?php
+
+function waziers_module_views_menu()
+{
+    $items = [];
+
+    $items['nodes'] = [
+      'page callback'    => 'waziers_module_views_example',
+      'access arguments' => ['access content'],
+      'type'             => MENU_CALLBACK,
+    ];
+
+    $items['nodes/selected'] = [
+      'page callback'    => 'waziers_module_views_selected',
+      'access arguments' => ['access content'],
+      'type'             => MENU_CALLBACK,
+    ];
+
+    $items['nodes/unselected'] = [
+      'page callback'    => 'waziers_module_views_unselected',
+      'access arguments' => ['access content'],
+      'type'             => MENU_CALLBACK,
+    ];
+
+    return $items;
+}
+
+function waziers_module_views_example()
+{
+    global $user;
+
+    $output = '';
+    $output .= '<h1>Tous les objets</h1>';
+    $output .=  waziers_module_views_output_header();
+
+    foreach (node_load_multiple(
+               [],
+               ['type' => 'objets', 'status' => NODE_PUBLISHED]
+             ) as $node) {
+
+        $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
+        $choice = (null === $choice ? false : $choice->choice );
+
+        $room = taxonomy_term_load($node->field_piece['und'][0]['tid']);
+        $room = taxonomy_term_view($room);
+
+
+        $output .= waziers_module_views_output_row($node, $choice);
+    }
+    $output .= '</table>';
+//    $nodeView = node_view($node);
+//    $output .=  render($nodeView);
+
+    return $output;
+}
+
+function waziers_module_views_selected()
+{
+    global $user;
+
+    $output = '';
+    $output .= '<h1>Tous les objets séléctionné</h1>';
+    $output .=  waziers_module_views_output_header();
+
+    foreach (node_load_multiple(
+               [],
+               ['type' => 'objets', 'status' => NODE_PUBLISHED]
+             ) as $node) {
+
+        $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
+        $choice = (null === $choice ? false : $choice->choice );
+        if(!$choice) continue;
+
+        $output .= waziers_module_views_output_row($node, $choice);
+
+    }
+    $output .= '</table>';
+//    $nodeView = node_view($node);
+//    $output .=  render($nodeView);
+
+    return $output;
+}
+
+function waziers_module_views_unselected()
+{
+    global $user;
+
+    $output = '';
+    $output .= '<h1>Tous les objets non séléctionné</h1>';
+    $output .=  waziers_module_views_output_header();
+
+    foreach (node_load_multiple(
+               [],
+               ['type' => 'objets', 'status' => NODE_PUBLISHED]
+             ) as $node) {
+
+        $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
+        $choice = (null === $choice ? false : $choice->choice );
+        if($choice) continue;
+
+        $output .= waziers_module_views_output_row($node, $choice);
+
+    }
+    $output .= '</table>';
+//    $nodeView = node_view($node);
+//    $output .=  render($nodeView);
+
+    return $output;
+}
+
+
+function waziers_module_views_output_header()
+{
+    global $base_url;
+
+    $output = '';
+
+    $output .= '<a href="'.$base_url.'/nodes">Tous les objets</a> ';
+    $output .= '<a href="'.$base_url.'/nodes/selected">Objets séléctionnés</a> ';
+    $output .= '<a href="'.$base_url.'/nodes/unselected">Objets non séléctionnés</a> ';
+    $output .= '<table style="width:100%">';
+    $output .= '<tr>';
+    $output .= '<th>Ref</th>';
+    $output .= '<th>Titre</th> ';
+    $output .= '<th>Prix min</th>';
+    $output .= '<th>Prix max</th>';
+    $output .= '<th>Pièce</th>';
+    $output .= '<th>Action</th>';
+    $output .= '</tr>';
+
+    return $output;
+
+}
+function waziers_module_views_output_row($node, $choice)
+{
+    $output = '';
+    $room = taxonomy_term_load($node->field_piece['und'][0]['tid']);
+
+    $output .= '<tr>';
+    $output .= '<td>'.$node->field_references['und'][0]['value'].'</td>';
+    $output .= "<td>". l($node->title, 'node/'.$node->nid) ."</td>";
+    $output .= '<td>'.$node->field_prix_min['und'][0]['value'].'</td> ';
+    $output .= '<td>'.$node->field_prix_max['und'][0]['value'].'</td>';
+    $output .= '<td>'. l($room->name, 'taxonomy/term/'.$room->tid) .'</td>';
+    $output .= '<td>'. _waziers_module_choose_button($node->nid, $choice) .'</td>';
+    $output .= '</tr>';
+
+    return $output;
+
+}

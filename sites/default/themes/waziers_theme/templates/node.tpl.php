@@ -108,23 +108,9 @@ $waziers_choice = isset($waziers_choice) && $waziers_choice;
         ?>
     </div>
 
-    <?php if (module_exists('waziers_module_choose')) { ?>
-        <?php if ($waziers_choice) { ?>
-            <div>
-                <button class="button button-leave"
-                        data-nid="<?php print $node->nid; ?>">
-                    rendre
-                </button>
-            </div>
-        <?php } else { ?>
-            <div>
-                <button class="button button-choose"
-                        data-nid="<?php print $node->nid; ?>">
-                    Choisir
-                </button>
-            </div>
-        <?php } ?>
-    <?php } else { ?>
+    <?php if (module_exists('waziers_module_choose')) {
+        print _waziers_module_choose_button($nid, $waziers_choice);
+    } else { ?>
         <?php if ($waziers_choice) : ?>
             vous avez choisit cet objet
         <?php endif ?>
