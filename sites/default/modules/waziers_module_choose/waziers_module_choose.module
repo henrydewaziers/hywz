@@ -43,7 +43,6 @@ function waziers_module_choose_example($nid)
 
 function _waziers_module_choose_update($nid, $uid, $choiceValue)
 {
-    var_dump([$nid, $uid, $choiceValue]);
     $query = db_update('waziers_choice');
     $query->fields(['choice' => $choiceValue]);
     $query->condition('nid', $nid);

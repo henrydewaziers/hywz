@@ -10,15 +10,10 @@ function waziers_module_views_menu()
       'type'             => MENU_CALLBACK,
     ];
 
-    $items['nodes/selected'] = [
+    $items['nodes/selected/%'] = [
       'page callback'    => 'waziers_module_views_selected',
       'access arguments' => ['access content'],
-      'type'             => MENU_CALLBACK,
-    ];
-
-    $items['nodes/unselected'] = [
-      'page callback'    => 'waziers_module_views_unselected',
-      'access arguments' => ['access content'],
+      'page arguments'   => [2],
       'type'             => MENU_CALLBACK,
     ];
 
@@ -31,14 +26,20 @@ function waziers_module_views_example()
 
     $output = '';
     $output .= '<h1>Tous les objets</h1>';
-    $output .=  waziers_module_views_output_header();
+    $output .= waziers_module_views_output_header();
+    $total = ['min' => 0, 'max' => 0];
 
     foreach (_waziers_module_views_get_objects() as $node) {
-        $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
-        $choice = (null === $choice ? false : $choice->choice );
+        $choice = _waziers_module_getChoice(
+          intval($node->nid),
+          intval($user->uid)
+        );
+        $choice = (null === $choice ? false : $choice->choice);
 
-        $output .= waziers_module_views_output_row($node, $choice);
+        $output .= waziers_module_views_output_row($total, $node, $choice);
     }
+    $output .= waziers_module_views_output_bottom($total);
+
     $output .= '</table>';
 //    $nodeView = node_view($node);
 //    $output .=  render($nodeView);
@@ -46,64 +47,64 @@ function waziers_module_views_example()
     return $output;
 }
 
-function waziers_module_views_selected()
+function waziers_module_views_selected($selection)
 {
     global $user;
 
     $output = '';
-    $output .= '<h1>Tous les objets sélectionnés</h1>';
-    $output .=  waziers_module_views_output_header();
+    $output .= '<h1>Tous les objets sélectionnés `';
+    $output .= variable_get('waziers_choice_'.$selection, 'Je veux ce lot +++');
+    $output .= '`</h1>';
+    $output .= waziers_module_views_output_header();
 
+    $total = ['min' => 0, 'max' => 0];
     foreach (_waziers_module_views_get_objects() as $node) {
 
-        $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
-        $choice = (null === $choice ? false : $choice->choice );
-        if(!$choice) continue;
+        $choice = _waziers_module_getChoice(
+          intval($node->nid),
+          intval($user->uid)
+        )->choice;
+        if ($selection !== $choice) {
+            continue;
+        }
 
-        $output .= waziers_module_views_output_row($node, $choice);
-
+        $output .= waziers_module_views_output_row($total, $node, $choice);
     }
+    $output .= waziers_module_views_output_bottom($total);
     $output .= '</table>';
+
 //    $nodeView = node_view($node);
 //    $output .=  render($nodeView);
 
     return $output;
 }
-
-function waziers_module_views_unselected()
-{
-    global $user;
-
-    $output = '';
-    $output .= '<h1>Tous les objets non sélectionnés</h1>';
-    $output .=  waziers_module_views_output_header();
-
-    foreach (_waziers_module_views_get_objects() as $node) {
-
-        $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
-        $choice = (null === $choice ? false : $choice->choice );
-        if($choice) continue;
-
-        $output .= waziers_module_views_output_row($node, $choice);
-
-    }
-    $output .= '</table>';
-//    $nodeView = node_view($node);
-//    $output .=  render($nodeView);
-
-    return $output;
-}
-
 
 function waziers_module_views_output_header()
 {
     global $base_url;
 
+
+    $variables = [
+      variable_get('waziers_choice_0', 'Je veux ce lot +++'),
+      variable_get('waziers_choice_1', 'Je veux ce lot ++'),
+      variable_get('waziers_choice_2', 'Je veux ce lot +'),
+      variable_get('waziers_choice_3', 'Je veux pas de ce lot'),
+    ];
+
     $output = '';
 
+    $output .= '<ul>';
+    $output .= '<li>';
     $output .= '<a href="'.$base_url.'/nodes">Tous les objets</a> ';
-    $output .= '<a href="'.$base_url.'/nodes/selected">Objets séléctionnés</a> ';
-    $output .= '<a href="'.$base_url.'/nodes/unselected">Objets non séléctionnés</a> ';
+    $output .= '</li>';
+    for ($i = 0; $i < count($variables); $i++) {
+        $output .= '<li>';
+        $output .= '<a href="'.$base_url.'/nodes/selected/'.$i.'">';
+        $output .= $variables[$i].'</a> ';
+        $output .= '</li>';
+    }
+
+    $output .= '</ul>';
     $output .= '<table style="width:100%">';
     $output .= '<tr>';
     $output .= '<th>Ref</th>';
@@ -115,33 +116,56 @@ function waziers_module_views_output_header()
     $output .= '</tr>';
 
     return $output;
-
 }
-function waziers_module_views_output_row($node, $choice)
+
+function waziers_module_views_output_row(&$total, $node, $choice)
 {
+    $total['min'] += $node->field_prix_min['und'][0]['value'];
+    $total['max'] += $node->field_prix_max['und'][0]['value'];
+
     $output = '';
-    $room = taxonomy_term_load($node->field_piece['und'][0]['tid']);
+    $room   = taxonomy_term_load($node->field_piece['und'][0]['tid']);
 
     $output .= '<tr>';
     $output .= '<td>'.$node->field_references['und'][0]['value'].'</td>';
-    $output .= "<td>". l($node->title, 'node/'.$node->nid) ."</td>";
+    $output .= "<td>".l($node->title, 'node/'.$node->nid)."</td>";
     $output .= '<td>'.$node->field_prix_min['und'][0]['value'].'</td> ';
     $output .= '<td>'.$node->field_prix_max['und'][0]['value'].'</td>';
-    $output .= '<td>'. l($room->name, 'taxonomy/term/'.$room->tid) .'</td>';
-    $output .= '<td>'. _waziers_module_choose_button($node->nid, $choice) .'</td>';
+    $output .= '<td>'.l($room->name, 'taxonomy/term/'.$room->tid).'</td>';
+    $output .= '<td>'._waziers_module_choose_button(
+        $node->nid,
+        $choice
+      ).'</td>';
     $output .= '</tr>';
 
     return $output;
-
 }
 
-function _waziers_module_views_get_objects () {
+function waziers_module_views_output_bottom($total)
+{
+    $output = '';
+    $output .= '<tfoot>';
+    $output .= '<tr>';
+    $output .= '<td></td>';
+    $output .= '<td></td>';
+    $output .= '<td>'.$total['min'].'</td>';
+    $output .= '<td>'.$total['max'].'</td>';
+    $output .= '<td></td>';
+    $output .= '<td></td>';
+    $output .= '</tr>';
+    $output .= '</tfoot>';
+
+    return $output;
+}
+
+function _waziers_module_views_get_objects()
+{
 
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
       ->propertyCondition('status', NODE_PUBLISHED)
-      ->propertyCondition('type', array('objets'))
-      ->fieldOrderBy('field_references','value',  'ASC');
+      ->propertyCondition('type', ['objets'])
+      ->fieldOrderBy('field_references', 'value', 'ASC');
     $result = $query->execute();
 
     $newArray = [];
