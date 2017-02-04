@@ -1,5 +1,7 @@
 <?php
 
+const DEFAULT_CHOICE = 3;
+
 /**
  * Implementation of hook_preprocess_node().
  */
@@ -24,5 +26,27 @@ function _waziers_module_getChoice ($nid, $uid) {
     return $record;
   }
 
+  _waziers_module_insert($nid, $uid, DEFAULT_CHOICE);
+
+  $result = $query->execute();
+  foreach ($result as $record) {
+    return $record;
+  }
+
   return null;
+}
+
+
+function _waziers_module_insert($nid, $uid, $choiceValue)
+{
+    $query = db_insert('waziers_choice');
+    $query->fields(
+      [
+        'nid'    => $nid,
+        'uid'    => $uid,
+        'choice' => $choiceValue,
+      ]
+    );
+
+    return $query->execute();
 }

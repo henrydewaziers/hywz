@@ -37,10 +37,6 @@ function waziers_module_views_example()
         $choice = _waziers_module_getChoice(intval($node->nid), intval($user->uid));
         $choice = (null === $choice ? false : $choice->choice );
 
-        $room = taxonomy_term_load($node->field_piece['und'][0]['tid']);
-        $room = taxonomy_term_view($room);
-
-
         $output .= waziers_module_views_output_row($node, $choice);
     }
     $output .= '</table>';

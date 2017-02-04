@@ -19,75 +19,69 @@ function waziers_module_choose_menu()
 
 function waziers_module_choose_example($nid)
 {
-
-    if (empty($_POST["waziersChoice"])) {
-        die();
-    }
     global $user;
-    $choice = _waziers_module_getChoice($nid, $user->uid);
 
+    $choice = $_POST["waziersChoice"];
     $result = ['valid' => true];
 
-    if (null === $choice) {
-        $result['sql']          = _waziers_module_choose_insert(
-          $nid,
-          $user->uid,
-          'take' == $_POST["waziersChoice"]
-        );
-        $result['sql_function'] = 'insert';
-    } else {
-        $result['sql']          = _waziers_module_choose_update(
-          $choice,
-          'take' == $_POST["waziersChoice"]
-        );
-        $result['sql_function'] = 'insert';
+    if (empty($choice) && "0" !== $choice) {
+        throw new \Exception('there is no choice', 404);
     }
 
+    $result['sql']          = _waziers_module_choose_update(
+      $nid,
+      $user->uid,
+      $_POST["waziersChoice"]
+    );
+
+    $result['sql_function'] = 'insert';
 
     drupal_json_output($result);
     exit();
 }
 
 
-function _waziers_module_choose_update($choice, $choiceValue)
+function _waziers_module_choose_update($nid, $uid, $choiceValue)
 {
+    var_dump([$nid, $uid, $choiceValue]);
     $query = db_update('waziers_choice');
-    $query->fields(['choice' => intval($choiceValue)]);
-    $query->condition('nid', $choice->nid);
-    $query->condition('uid', $choice->uid);
+    $query->fields(['choice' => $choiceValue]);
+    $query->condition('nid', $nid);
+    $query->condition('uid', $uid);
 
     return $query->execute();
 }
 
-function _waziers_module_choose_button($nid, $waziers_choice)
+function _waziers_module_choose_button($nid, $waziersChoice = DEFAULT_CHOICE)
 {
+    $variables = [
+      variable_get('waziers_choice_0', 'Je veux ce lot +++'),
+      variable_get('waziers_choice_1', 'Je veux ce lot ++'),
+      variable_get('waziers_choice_2', 'Je veux ce lot +'),
+      variable_get('waziers_choice_3', 'Je veux pas de ce lot'),
+    ];
+
     $output = '';
-    if ($waziers_choice) {
-        $output .= '<div>';
-        $output .= '<button class="button button-leave" data-nid="'.$nid.'">';
-        $output .= 'Rendre';
-        $output .= '</button>';
-        $output .= '</div>';
-    } else {
-        $output .= '<div>';
-        $output .= '<button class="button button-choose" data-nid="'.$nid.'">';
-        $output .= 'Choisir';
-        $output .= '</button>';
-        $output .= '</div>';
+    $output .= '<form action="'.$nid.'">';
+    $output .= '<select data-nid="'.$nid.'">';
+    for ($i = 0 ; $i < count($variables) ; $i++) {
+        $output .= "<option value=\"$i\"". (intval($waziersChoice) === $i ? ' selected ': '') .">{$variables[$i]}</option>";
     }
+    $output .= '</select>';
+    $output .= '<button data-nid="'.$nid.'" class="button-valide">Soumetre</button>';
+    $output .= '</form>';
+//    if ($waziersChoice) {
+//        $output .= '<div>';
+//        $output .= '<button class="button button-leave" data-nid="'.$nid.'">';
+//        $output .= 'Rendre';
+//        $output .= '</button>';
+//        $output .= '</div>';
+//    } else {
+//        $output .= '<div>';
+//        $output .= '<button class="button button-choose" data-nid="'.$nid.'">';
+//        $output .= 'Choisir';
+//        $output .= '</button>';
+//        $output .= '</div>';
+//    }
     return $output;
-}
-
-function _waziers_module_choose_insert($nid, $uid, $choiceValue)
-{
-    $query = db_insert('waziers_choice');
-    $query->fields(
-      [
-        'nid'    => $nid,
-        'uid'    => $uid,
-        'choice' => $choiceValue,
-      ]
-    );
-
-    return $query->execute();
 }

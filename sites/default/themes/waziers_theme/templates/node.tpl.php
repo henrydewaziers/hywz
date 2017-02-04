@@ -78,7 +78,7 @@
  * @see template_process()
  */
 
-$waziers_choice = isset($waziers_choice) && $waziers_choice;
+$waziers_choice = isset($waziers_choice) ? $waziers_choice : 3;
 ?>
 
 <div id="node-<?php print $node->nid; ?>"
