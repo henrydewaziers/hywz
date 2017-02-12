@@ -65,3 +65,21 @@ function _waziers_module_choice_view($nid, $waziersChoice = DEFAULT_CHOICE)
 
     return $output;
 }
+
+function _waziers_module_get_objects()
+{
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->propertyCondition('status', NODE_PUBLISHED)
+      ->propertyCondition('type', ['objets'])
+      ->fieldOrderBy('field_references', 'value', 'ASC');
+    $result = $query->execute();
+
+    $newArray = [];
+    foreach ($result['node'] as $nid => $node) {
+        $newArray [] = node_load($nid);
+    }
+
+    return $newArray;
+}

@@ -1,5 +1,5 @@
 name = Waziers print an object
-description = "Show the objetcs list."
+description = "Print the result view."
 core = 7.x
 package = "Waziers"
 

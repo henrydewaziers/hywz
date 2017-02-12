@@ -1,5 +1,5 @@
 name = Waziers print an object
-description = "print an object product."
+description = "print an object product and all the default functions."
 core = 7.x
 package = "Waziers"
 

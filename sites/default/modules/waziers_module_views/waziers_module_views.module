@@ -29,7 +29,7 @@ function waziers_module_views_example()
     $output .= waziers_module_views_output_header();
     $total = ['min' => 0, 'max' => 0];
 
-    foreach (_waziers_module_views_get_objects() as $node) {
+    foreach (_waziers_module_get_objects() as $node) {
         $choice = _waziers_module_getChoice(
           intval($node->nid),
           intval($user->uid)
@@ -58,7 +58,7 @@ function waziers_module_views_selected($selection)
     $output .= waziers_module_views_output_header();
 
     $total = ['min' => 0, 'max' => 0];
-    foreach (_waziers_module_views_get_objects() as $node) {
+    foreach (_waziers_module_get_objects() as $node) {
 
         $choice = _waziers_module_getChoice(
           intval($node->nid),
@@ -156,22 +156,4 @@ function waziers_module_views_output_bottom($total)
     $output .= '</tfoot>';
 
     return $output;
-}
-
-function _waziers_module_views_get_objects()
-{
-
-    $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', 'node')
-      ->propertyCondition('status', NODE_PUBLISHED)
-      ->propertyCondition('type', ['objets'])
-      ->fieldOrderBy('field_references', 'value', 'ASC');
-    $result = $query->execute();
-
-    $newArray = [];
-    foreach ($result['node'] as $nid => $node) {
-        $newArray [] = node_load($nid);
-    }
-
-    return $newArray;
 }

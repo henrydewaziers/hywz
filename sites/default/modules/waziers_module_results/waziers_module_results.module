@@ -1,0 +1,160 @@
+<?php
+
+function waziers_module_results_menu()
+{
+    $items = [];
+
+    $items['b6d002cb71ed0681853b693b608bc28e'] = [
+      'page callback'    => 'waziers_module_results_example',
+      'access arguments' => ['access content'],
+      'type'             => MENU_CALLBACK,
+    ];
+
+    return $items;
+}
+
+function waziers_module_results_example()
+{
+    $cache = cache_get('waziers_module_results');
+    if (is_object($cache) && !empty($cache->data)) {
+        $output = $cache->data;
+    }
+    else {
+
+        $output = '';
+        $output .= '<h1>Tous les objets</h1>';
+        $output .= waziers_module_results_output_header();
+        $total = ['min' => 0, 'max' => 0];
+
+        foreach (_waziers_module_get_objects() as $node) {
+            $output .= waziers_module_results_output_row($total, $node);
+        }
+        $output .= waziers_module_results_output_bottom($total);
+
+        $output .= '</table>';
+
+        cache_set('waziers_module_results', $output);
+    }
+
+
+    return $output;
+}
+
+function waziers_module_results_output_header()
+{
+    global $base_url;
+
+    $users = _waziers_module_results_get_users();
+
+//    $variables = [
+//      variable_get('waziers_choice_0', 'Je veux ce lot +++'),
+//      variable_get('waziers_choice_1', 'Je veux ce lot ++'),
+//      variable_get('waziers_choice_2', 'Je veux ce lot +'),
+//      variable_get('waziers_choice_3', 'Je veux pas de ce lot'),
+//    ];
+
+    $output = '';
+
+//    $output .= '<ul>';
+//    $output .= '<li>';
+//    $output .= '<a href="'.$base_url.'/nodes">Tous les objets</a> ';
+//    $output .= '</li>';
+//    for ($i = 0; $i < count($variables); $i++) {
+//        $output .= '<li>';
+//        $output .= '<a href="'.$base_url.'/nodes/selected/'.$i.'">';
+//        $output .= $variables[$i].'</a> ';
+//        $output .= '</li>';
+//    }
+
+//    $output .= '</ul>';
+    $output .= '<table style="width:100%">';
+    $output .= '<tr>';
+    $output .= '<th>Ref</th>';
+    $output .= '<th>Titre</th> ';
+    $output .= '<th>Prix min</th>';
+    $output .= '<th>Prix max</th>';
+    $output .= '<th>Pièce</th>';
+    for ($i = 0; $i < count($users); $i++) {
+        $output .= '<th>' . $users[$i]->name .'</th>';
+    }
+    $output .= '</tr>';
+
+    return $output;
+}
+
+function waziers_module_results_output_row(&$total, $node)
+{
+    $users = _waziers_module_results_get_users();
+
+    $total['min'] += $node->field_prix_min['und'][0]['value'];
+    $total['max'] += $node->field_prix_max['und'][0]['value'];
+
+    $output = '';
+    $room   = taxonomy_term_load($node->field_piece['und'][0]['tid']);
+
+    $output .= '<tr>';
+    $output .= '<td>'.$node->field_references['und'][0]['value'].'</td>';
+    $output .= "<td>".l($node->title, 'node/'.$node->nid)."</td>";
+    $output .= '<td>'.$node->field_prix_min['und'][0]['value'].'</td> ';
+    $output .= '<td>'.$node->field_prix_max['und'][0]['value'].'</td>';
+    $output .= '<td>'.l($room->name, 'taxonomy/term/'.$room->tid).'</td>';
+
+    for ($i = 0; $i < count($users); $i++) {
+
+        $choice = _waziers_module_getChoice(
+          intval($node->nid),
+          intval($users[$i]->uid)
+        );
+
+        $output .= '<td>'  ;
+
+        $output .= _waziers_module_choice_view(
+          intval($node->nid),
+          intval($choice->choice)
+        );
+
+        $output .=  '</td>';
+    }
+
+
+    $output .= '</tr>';
+
+    return $output;
+}
+
+function waziers_module_results_output_bottom($total)
+{
+    $users = _waziers_module_results_get_users();
+
+    $output = '';
+    $output .= '<tfoot>';
+    $output .= '<tr>';
+    $output .= '<td></td>';
+    $output .= '<td></td>';
+    $output .= '<td>'.$total['min'].'</td>';
+    $output .= '<td>'.$total['max'].'</td>';
+    $output .= '<td></td>';
+    for ($i = 0; $i < count($users); $i++) {
+        $output .= '<td></td>';
+    }
+    $output .= '</tr>';
+    $output .= '</tfoot>';
+
+    return $output;
+}
+
+function _waziers_module_results_get_users () {
+    $allowedUser = variable_get('waziers_choice_allowed_uid', [2,3]);
+
+    $users = entity_load('user');
+    $endedUser = [];
+
+    for ($i = 0; $i < count($users); $i++) {
+        if (in_array($users[$i]->uid, $allowedUser)){
+            $endedUser[] = $users[$i];
+        }
+    }
+
+    return $endedUser;
+
+}
