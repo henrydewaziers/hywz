@@ -1,4 +1,4 @@
-name = Waziers print an object
+name = Waziers select views
 description = "Show the objetcs list."
 core = 7.x
 package = "Waziers"

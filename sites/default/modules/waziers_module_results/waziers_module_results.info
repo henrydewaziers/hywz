@@ -1,4 +1,4 @@
-name = Waziers print an object
+name = Waziers results phase
 description = "Print the result view."
 core = 7.x
 package = "Waziers"

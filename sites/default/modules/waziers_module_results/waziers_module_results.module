@@ -46,27 +46,8 @@ function waziers_module_results_output_header()
 
     $users = _waziers_module_results_get_users();
 
-//    $variables = [
-//      variable_get('waziers_choice_0', 'Je veux ce lot +++'),
-//      variable_get('waziers_choice_1', 'Je veux ce lot ++'),
-//      variable_get('waziers_choice_2', 'Je veux ce lot +'),
-//      variable_get('waziers_choice_3', 'Je veux pas de ce lot'),
-//    ];
-
     $output = '';
 
-//    $output .= '<ul>';
-//    $output .= '<li>';
-//    $output .= '<a href="'.$base_url.'/nodes">Tous les objets</a> ';
-//    $output .= '</li>';
-//    for ($i = 0; $i < count($variables); $i++) {
-//        $output .= '<li>';
-//        $output .= '<a href="'.$base_url.'/nodes/selected/'.$i.'">';
-//        $output .= $variables[$i].'</a> ';
-//        $output .= '</li>';
-//    }
-
-//    $output .= '</ul>';
     $output .= '<table style="width:100%">';
     $output .= '<tr>';
     $output .= '<th>Ref</th>';
@@ -149,9 +130,9 @@ function _waziers_module_results_get_users () {
     $users = entity_load('user');
     $endedUser = [];
 
-    for ($i = 0; $i < count($users); $i++) {
-        if (in_array($users[$i]->uid, $allowedUser)){
-            $endedUser[] = $users[$i];
+    foreach ($users as $user) {
+        if (in_array($user->uid, $allowedUser)){
+            $endedUser[] = $user;
         }
     }
 
