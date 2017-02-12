@@ -50,3 +50,18 @@ function _waziers_module_insert($nid, $uid, $choiceValue)
 
     return $query->execute();
 }
+
+function _waziers_module_choice_view($nid, $waziersChoice = DEFAULT_CHOICE)
+{
+
+    if (module_exists('waziers_module_choose')){
+        return  _waziers_module_choose_button($nid, $waziersChoice);
+    }
+
+    $variable = variable_get('waziers_choice_' .$waziersChoice);
+
+    $output = '';
+    $output .= "<span>{$variable}</span>";
+
+    return $output;
+}

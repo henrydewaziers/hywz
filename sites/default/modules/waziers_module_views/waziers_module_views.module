@@ -132,7 +132,7 @@ function waziers_module_views_output_row(&$total, $node, $choice)
     $output .= '<td>'.$node->field_prix_min['und'][0]['value'].'</td> ';
     $output .= '<td>'.$node->field_prix_max['und'][0]['value'].'</td>';
     $output .= '<td>'.l($room->name, 'taxonomy/term/'.$room->tid).'</td>';
-    $output .= '<td>'._waziers_module_choose_button(
+    $output .= '<td>'._waziers_module_choice_view(
         $node->nid,
         $choice
       ).'</td>';

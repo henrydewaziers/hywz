@@ -69,18 +69,6 @@ function _waziers_module_choose_button($nid, $waziersChoice = DEFAULT_CHOICE)
     $output .= '</select>';
     $output .= '<button data-nid="'.$nid.'" class="button-valide">Soumetre</button>';
     $output .= '</form>';
-//    if ($waziersChoice) {
-//        $output .= '<div>';
-//        $output .= '<button class="button button-leave" data-nid="'.$nid.'">';
-//        $output .= 'Rendre';
-//        $output .= '</button>';
-//        $output .= '</div>';
-//    } else {
-//        $output .= '<div>';
-//        $output .= '<button class="button button-choose" data-nid="'.$nid.'">';
-//        $output .= 'Choisir';
-//        $output .= '</button>';
-//        $output .= '</div>';
-//    }
+
     return $output;
 }
