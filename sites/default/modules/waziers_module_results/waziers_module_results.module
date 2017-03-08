@@ -4,7 +4,7 @@ function waziers_module_results_menu()
 {
     $items = [];
 
-    $items['b6d002cb71ed0681853b693b608bc28e'] = [
+    $items[variable_get('waziers_end_url', 'b6d002cb71ed0681853b693b608bc28e')] = [
       'page callback'    => 'waziers_module_results_example',
       'access arguments' => ['access content'],
       'type'             => MENU_CALLBACK,
